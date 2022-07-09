@@ -18,8 +18,18 @@ contract HotelRoom{
         currentStatus = Status.Vacant;
     }
 
+    modifier onlyOwner{
+        require(msg.sender == owner, "only owner can do checkout");
+        _;
+    }
+
     modifier onlyWhileVacant{
         require(currentStatus == Status.Vacant, "Currently occupied");
+        _;
+    }
+
+    modifier onlyWhileOccupied{
+        require(currentStatus == Status.Occupied, "Room not occupied");
         _;
     }
 
@@ -28,6 +38,9 @@ contract HotelRoom{
         _;
     }
 
+    function checkout() public onlyOwner onlyWhileOccupied{
+        currentStatus = Status.Vacant;
+    }
     function book() public payable onlyWhileVacant cost(2 ether){
         
         currentStatus = Status.Occupied;
